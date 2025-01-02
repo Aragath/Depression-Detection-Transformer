@@ -9,12 +9,6 @@ This repository contains the code for a research project focused on detecting de
 - Om Jodhpurkar (jodhpurk@usc.edu)
 - Sneh Thorat (snehpram@usc.edu)
 
-## Abstract
-In this study, we propose a multi-modal transformer-based framework for the detection of depression using audio and text modalities from clinical interview data. Our approach leverages the self-attention mechanism in transformers and improves both diagnostic accuracy and interpretability. The proposed model achieves an average improvement of 4.5% in diagnostic accuracy for audio-textual depression detection on two benchmark datasets. By analyzing attention weights, we identify the most influential features in audio and text that drive the model’s predictions, offering valuable insights into key factors contributing to depression diagnosis.
-
-## Introduction
-Depression is a serious mental health disorder that often goes undiagnosed due to the challenges associated with traditional diagnostic methods. This project proposes an automated solution that combines audio and textual data from clinical interviews to improve the detection of depression. The proposed transformer-based model offers improved diagnostic accuracy and interpretability, with potential for use in clinical settings for early intervention.
-
 ## Datasets
 We use the following two datasets for training and evaluation:
 
@@ -27,25 +21,55 @@ We use the following two datasets for training and evaluation:
    [Link to Dataset](https://github.com/speechandlanguageprocessing/ICASSP2022-Depression)
 
 ## Methodology
-We propose a multi-modal framework for depression detection that integrates audio and text features. The steps are as follows:
+We propose a multi-modal framework for depression detection, which integrates audio and text features. Key steps include:
 
 1. **Feature Extraction**  
    - **Text**: Use BERT embeddings to extract text features. Each subject’s sentence is represented by the mean of BERT word-level embeddings.
-   - **Audio**: Represent audio through mel-spectrograms, then apply NetVLAD to extract embeddings.
+   - **Audio**: Generate mel-spectrograms from audio, then use a NetVLAD layer to extract compact and robust audio embeddings.
 
 2. **Model Architecture**  
    - Transformer encoders for both audio and text modalities.
    - Concatenate features from both modalities and pass through fully connected layers for classification.
 
 3. **Interpretability**  
-   - Analyze attention weights to understand the influential features in audio and text data that affect depression diagnosis.
+   - Attention weights are analyzed to identify the most influential features in both audio and text data, providing explainability for the model's predictions.
 
 ## Results
-In experiments conducted on the EATD dataset, our model achieved an F1 score of 0.84, outperforming baseline models, including text-only and audio-only LSTM models. The results demonstrate the effectiveness of the multi-modal transformer-based approach.
+### Performance Metrics
+Our experiments demonstrate the effectiveness of the proposed model on both datasets. The results show consistent improvements in diagnostic accuracy and F1 scores compared to baseline models.
 
+#### DAIC-WOZ Results
+| Model | F1 Score |
+|-------|----------|
+| Audio LSTM | 0.78 |
+| Text LSTM | 0.76 |
+| Text & Audio Bi-LSTM & GRU + Attention | 0.74 |
+| **Text & Audio Multi-modal Model (Proposed)** | **0.82** |
+
+#### EATD Results
 | Model | F1 Score |
 |-------|----------|
 | Audio LSTM | 0.80 |
 | Text LSTM | 0.79 |
 | Text & Audio Bi-LSTM & GRU + Attention | 0.71 |
-| **Text & Audio Transformer (Proposed)** | **0.84** |
+| **Text & Audio Multi-modal Model (Proposed)** | **0.84** |
+
+### Interpretability Results
+The interpretability of the model was evaluated by analyzing attention weights for both audio and textual features. Key observations include:
+
+- **Text Modality**:  
+  The attention mechanism highlighted specific words and phrases as significant in detecting depression. For instance:  
+  - Words such as "loving," "intelligent," and "funny" were given distinct weights, reflecting their relevance in the model's predictions.  
+  - The heatmap below illustrates the attention weights for a sample sentence, where key terms are weighted based on their importance:  
+
+    ![Attention Weights Heatmap for Text Modality](assets/Figure_1.png)
+
+- **Audio Modality**:  
+  Attention analysis in the audio modality revealed the following:  
+  - Features such as reduced pitch variability and slower speech rate were consistently flagged as significant.  
+  - The heatmap below shows how specific audio frames were assigned higher attention weights, emphasizing moments with critical prosodic features:  
+
+    ![Attention Weights Heatmap for Audio Modality](assets/Figure_2.png)
+
+These insights demonstrate the model’s ability to diagnose depression effectively while providing interpretable outputs that align with established psychological theories and clinical practices.
+
